@@ -10,10 +10,14 @@ class department_model extends CI_Model {
 
 
     public function getDataForDashboard() {
+      $d['student'] = $this->db->get('student')->result_array();
+      $d['c_student'] = $this->db->get('student')->num_rows();
       $d['employee'] = $this->db->get('employee')->result_array();
       $d['c_employee'] = $this->db->get('employee')->num_rows();
       $d['department'] = $this->db->get('department')->result_array();
       $d['c_department'] = $this->db->get('department')->num_rows();
+      $d['course'] = $this->db->get('course')->result_array();
+      $d['c_course'] = $this->db->get('course')->num_rows();
       $d['users'] = $this->db->get('users')->result_array();
       $d['c_users'] = $this->db->get('users')->num_rows();
 
@@ -28,8 +32,8 @@ class department_model extends CI_Model {
         return $this->db->get('employee')->result_array();
     }
 
-    public function getStrand() {
-        return $this->db->get('strand')->result_array();
+    public function getCourse() {
+        return $this->db->get('course')->result_array();
     }
 
     public function getStudent() {

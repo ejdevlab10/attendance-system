@@ -191,4 +191,90 @@ class Student_controller extends CI_Controller {
 			Successfully deleted an student!</div>');
 		redirect('Student_controller/view_student');
 	}
+
+        // View departments
+    public function view_departments() {
+        $data['title'] = 'Department';
+        $data['items'] = $this->department_model->getDepartment();
+        $data['account'] = $this->Admin_model->getAdmin($this->session->userdata['username']);
+
+        $this->load->view('templates/admin_header', $data);
+        $this->load->view('templates/admin_sidebar', $data);
+        $this->load->view('admin/options/department/index', $data);
+        $this->load->view('templates/admin_footer');
+    }
+
+    // Add new department
+    public function add_dep() {
+        $data['title'] = 'Department';
+        $data['account'] = $this->Admin_model->getAdmin($this->session->userdata['username']);
+
+        $this->form_validation->set_rules('id', 'Department ID', 'required|trim|exact_length[3]|alpha');
+        $this->form_validation->set_rules('name', 'Department Name', 'required|trim');
+
+        if ($this->form_validation->run() == false) {
+            $this->load->view('templates/admin_header', $data);
+            $this->load->view('templates/admin_sidebar', $data);
+            $this->load->view('admin/options/department/a_dept', $data);
+            $this->load->view('templates/admin_footer');
+        } else {
+            $this->_addDept();
+        }
+    }
+
+    // Store department in database
+    public function store_dep() {
+        $data = [
+            'id' => $this->input->post('id'),
+            'name' => $this->input->post('name')
+        ];
+
+        $checkId = $this->db->get_where('department', ['id' => $data['id']])->num_rows();
+        if ($checkId > 0) {
+            $this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">
+                Failed to add, ID used!</div>');
+        } else {
+            $this->db->insert('department', $data);
+            $this->session->set_flashdata('message', '<div class="alert alert-success" role="alert">
+                Successfully added a new department!</div>');
+        }
+        redirect('Admin_controller/view_departments');
+    }
+
+    // Edit department
+    public function edit_dep($d_id) {
+        $data['title'] = 'Department';
+        $data['d_old'] = $this->db->get_where('department', ['id' => $d_id])->row_array();
+        $data['account'] = $this->Admin_model->getAdmin($this->session->userdata['username']);
+
+
+        $this->form_validation->set_rules('d_name', 'Department Name', 'required|trim');
+
+        if ($this->form_validation->run() == false) {
+            $this->load->view('templates/admin_header', $data);
+            $this->load->view('templates/admin_sidebar', $data);
+            $this->load->view('admin/options/department/e_dept', $data);
+            $this->load->view('templates/admin_footer');
+        } else {
+            $name = $this->input->post('d_name');
+            $this->_editDept($d_id, $name);
+        }
+    }
+
+    private function _editDept($d_id, $name) {
+        $data = ['name' => $name];
+        $this->db->update('department', $data, ['id' => $d_id]);
+        $this->session->set_flashdata('message', '<div class="alert alert-success" role="alert">
+            Successfully edited a department!</div>');
+        redirect('Admin_controller/view_departments');
+    }
+
+    // Delete department
+    public function delete_dep($id) {
+        $this->db->delete('department', ['id' => $id]);
+        $this->session->set_flashdata('message', '<div class="alert alert-success" role="alert">
+            Successfully deleted a department!</div>');
+        redirect('Admin_controller/view_departments');
+    }
+
 }

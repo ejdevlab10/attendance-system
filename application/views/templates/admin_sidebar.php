@@ -36,14 +36,18 @@
       </li>
 
       <li class="nav-item">
-      
+        <a class="nav-link pb-0" href="<?= base_url('Admin_controller/view-course'); ?>">
+        <i class="fas fa-fw fa-building"></i>
+        <span>Course</span></a>
+      </li>
+
+      <li class="nav-item">
       <a class="nav-link pb-0" href="<?= base_url('Admin_controller/view_employee'); ?>">
         <i class="fas fa-fw fa-id-badge"></i>
         <span>Employee</span></a>
       </li>
-      
+
       <li class="nav-item">
-      
       <a class="nav-link pb-0" href="<?= base_url('Student_controller/view_student'); ?>">
         <i class="fas fa-fw fa-graduation-cap"></i>
         <span>Students</span></a>

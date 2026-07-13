@@ -18,7 +18,8 @@ class Admin_controller extends CI_Controller {
         $data['title'] = 'Dashboard';
         $data['display'] = $this->department_model->getDataForDashboard();
         $data['title'] = 'Dashboard';
-        $data['items'] = $this->department_model->getDepartment();
+        $data['departments'] = $this->department_model->getDepartment();
+        $data['courses'] = $this->department_model->getCourse();
         $data['account'] = $this->Admin_model->getAdmin($this->session->userdata['username']);
 
         

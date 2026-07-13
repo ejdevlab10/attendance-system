@@ -36,7 +36,7 @@
       </li>
 
       <li class="nav-item">
-        <a class="nav-link pb-0" href="<?= base_url('Admin_controller/view-course'); ?>">
+        <a class="nav-link pb-0" href="<?= base_url('Student_Controller/view_course'); ?>">
         <i class="fas fa-fw fa-building"></i>
         <span>Course</span></a>
       </li>

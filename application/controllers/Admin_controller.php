@@ -55,7 +55,7 @@ class Admin_controller extends CI_Controller {
             $this->load->view('admin/options/department/a_dept', $data);
             $this->load->view('templates/admin_footer');
         } else {
-            $this->_addDept();
+            $this->store_dep();
         }
     }
 

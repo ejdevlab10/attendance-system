@@ -20,7 +20,6 @@ class Student_controller extends CI_Controller {
         $this->load->view('admin/options/student/index', $data);
         $this->load->view('templates/admin_footer');
     }
-
     // Add student
     public function add_student() {
         $data['title'] = 'Student';
@@ -45,7 +44,6 @@ class Student_controller extends CI_Controller {
             $this->store_student();
         }
     }
-
     private function store_student() {
         $f_name = $this->input->post('f_name');
         $m_name = $this->input->post('m_name');
@@ -95,9 +93,6 @@ class Student_controller extends CI_Controller {
         $this->session->set_flashdata('message', '<div class="alert alert-success">Successfully added a new student!</div>');
         redirect('Student_controller/view_student');
     }
-
-    
-
     // Edit student data
     public function e_student($e_id) {
         $data['title'] = 'Student';
@@ -112,7 +107,7 @@ class Student_controller extends CI_Controller {
         $this->form_validation->set_rules('e_gender', 'Gender', 'required');
         $this->form_validation->set_rules('e_birth_date', 'Birth Date', 'required|trim');
         $this->form_validation->set_rules('e_enrolled_date', 'Enrolled Date', 'required|trim');
-        $this->form_validation->set_rules('d_id', 'Department', 'required|trim');
+        $this->form_validation->set_rules('d_id', 'Course', 'required|trim');
 
         if ($this->form_validation->run() == false) {
             $this->load->view('templates/admin_header', $data);
@@ -162,7 +157,6 @@ class Student_controller extends CI_Controller {
             $this->_editStudent($e_id, $data, ['department_id' => $d_id]);
         }
     }
-
     private function _editStudent($e_id, $data) {
         $this->db->update('student', $data, ['id' => $e_id]);
         $upd = $this->db->affected_rows();
@@ -176,7 +170,6 @@ class Student_controller extends CI_Controller {
         }
         redirect('Student_controller/view_student');
     }
-    
 	// Delete student
 	public function delete_student($id) {
 		$emp = $this->db->get_where('student', ['id' => $id])->row_array();
@@ -192,68 +185,68 @@ class Student_controller extends CI_Controller {
 		redirect('Student_controller/view_student');
 	}
 
-        // View departments
-    public function view_departments() {
-        $data['title'] = 'Department';
-        $data['items'] = $this->department_model->getDepartment();
+    // View course
+    public function view_course() {
+        $data['title'] = 'Course';
+        $data['items'] = $this->department_model->getCourse();
         $data['account'] = $this->Admin_model->getAdmin($this->session->userdata['username']);
 
         $this->load->view('templates/admin_header', $data);
         $this->load->view('templates/admin_sidebar', $data);
-        $this->load->view('admin/options/department/index', $data);
+        $this->load->view('admin/options/course/index', $data);
         $this->load->view('templates/admin_footer');
     }
 
-    // Add new department
-    public function add_dep() {
-        $data['title'] = 'Department';
+    // Add new course
+    public function add_course() {
+        $data['title'] = 'Course';
         $data['account'] = $this->Admin_model->getAdmin($this->session->userdata['username']);
 
-        $this->form_validation->set_rules('id', 'Department ID', 'required|trim|exact_length[3]|alpha');
-        $this->form_validation->set_rules('name', 'Department Name', 'required|trim');
+        $this->form_validation->set_rules('id', 'Course ID', 'required|trim|exact_length[3]|alpha');
+        $this->form_validation->set_rules('name', 'Course Name', 'required|trim');
 
         if ($this->form_validation->run() == false) {
             $this->load->view('templates/admin_header', $data);
             $this->load->view('templates/admin_sidebar', $data);
-            $this->load->view('admin/options/department/a_dept', $data);
+            $this->load->view('admin/options/course/add_course', $data);
             $this->load->view('templates/admin_footer');
         } else {
-            $this->_addDept();
+            $this->add_course();
         }
     }
 
-    // Store department in database
-    public function store_dep() {
+    // Store course in database
+    public function store_course() {
         $data = [
             'id' => $this->input->post('id'),
             'name' => $this->input->post('name')
         ];
 
-        $checkId = $this->db->get_where('department', ['id' => $data['id']])->num_rows();
+        $checkId = $this->db->get_where('course', ['id' => $data['id']])->num_rows();
         if ($checkId > 0) {
             $this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">
                 Failed to add, ID used!</div>');
         } else {
-            $this->db->insert('department', $data);
+            $this->db->insert('course', $data);
             $this->session->set_flashdata('message', '<div class="alert alert-success" role="alert">
-                Successfully added a new department!</div>');
+                Successfully added a new course!</div>');
         }
-        redirect('Admin_controller/view_departments');
+        redirect('Admin_controller/view_course');
     }
 
-    // Edit department
-    public function edit_dep($d_id) {
-        $data['title'] = 'Department';
-        $data['d_old'] = $this->db->get_where('department', ['id' => $d_id])->row_array();
+    // Edit course
+    public function edit_course($d_id) {
+        $data['title'] = 'Course';
+        $data['d_old'] = $this->db->get_where('course', ['id' => $d_id])->row_array();
         $data['account'] = $this->Admin_model->getAdmin($this->session->userdata['username']);
 
 
-        $this->form_validation->set_rules('d_name', 'Department Name', 'required|trim');
+        $this->form_validation->set_rules('d_name', 'Course Name', 'required|trim');
 
         if ($this->form_validation->run() == false) {
             $this->load->view('templates/admin_header', $data);
             $this->load->view('templates/admin_sidebar', $data);
-            $this->load->view('admin/options/department/e_dept', $data);
+            $this->load->view('admin/options/course/e_course', $data);
             $this->load->view('templates/admin_footer');
         } else {
             $name = $this->input->post('d_name');
@@ -263,18 +256,18 @@ class Student_controller extends CI_Controller {
 
     private function _editDept($d_id, $name) {
         $data = ['name' => $name];
-        $this->db->update('department', $data, ['id' => $d_id]);
+        $this->db->update('course', $data, ['id' => $d_id]);
         $this->session->set_flashdata('message', '<div class="alert alert-success" role="alert">
-            Successfully edited a department!</div>');
-        redirect('Admin_controller/view_departments');
+            Successfully edited a course!</div>');
+        redirect('Admin_controller/view_course');
     }
 
-    // Delete department
-    public function delete_dep($id) {
-        $this->db->delete('department', ['id' => $id]);
+    // Delete course
+    public function delete_course($id) {
+        $this->db->delete('course', ['id' => $id]);
         $this->session->set_flashdata('message', '<div class="alert alert-success" role="alert">
-            Successfully deleted a department!</div>');
-        redirect('Admin_controller/view_departments');
+            Successfully deleted a course!</div>');
+        redirect('Admin_controller/view_course');
     }
 
 }
